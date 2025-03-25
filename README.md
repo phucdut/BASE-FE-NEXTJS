@@ -1,36 +1,292 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 BASE-FE-NEXTJS
 
-## Getting Started
+Base project structure for **Next.js** with modern technologies like **TypeScript, Redux Toolkit, React Query, Next-Intl, Zod, Axios, and more**.
 
-First, run the development server:
+## 📌 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **⚡ Next.js** (App Router)
+- **🎨 TailwindCSS + ShadCN** (Modern UI components)
+- **🌎 Next-Intl** (Internationalization)
+- **🔗 React Query** (Data fetching and caching)
+- **🔒 Redux Toolkit + Persist** (State management)
+- **✅ Zod** (Schema validation)
+- **📡 Axios** (API calls with error handling)
+- **🔥 ESLint & Prettier** (Code formatting & linting)
+
+---
+
+## 📂 Project Structure
+
+```
+BASE-FE-NEXTJS/
+├── api/
+│   ├── axios.ts                 # Axios instance
+│   ├── endpoints.ts             # API endpoints
+│   ├── services/
+│   │   ├── auth.ts              # Auth service
+│   │   ├── user.ts              # User service
+│   ├── queries/
+│   │   ├── authQueries.ts       # React Query for auth
+│   │   ├── userQueries.ts       # React Query for user
+│
+├── app/
+│   ├── [locale]/
+│   │   ├── layout.tsx           # Layout wrapper
+│   │   ├── page.tsx             # Root page
+│   │   ├── not-found.tsx        # 404 Page
+│   │   ├── (protected)/         # Protected routes
+│   │   │   ├── (routes)/
+│   │   │   │   ├── login/
+│   │   │   │   │   ├── page.tsx # Login page
+│   │   │   │   │   ├── LoginForm.tsx # Login form (React Query)
+│   │   ├── api(server-side)/    # API routes (server-side)
+│   │   │   ├── auth/
+│   │   │   │   ├── [...nextauth]/route.ts # NextAuth config
+│   ├── config.ts                # App config
+│   ├── eventBus.ts              # Global event bus
+│   ├── globals.css              # Global styles
+│
+├── components/
+│   ├── ui/                      # Reusable UI components (Button, Modal, Card...)
+│   ├── layout/                  # Layout components (Header, Sidebar, Footer)
+│   ├── form/                    # Form components (Input, Select)
+│   ├── i18n.tsx                 # Internationalization setup
+│
+├── features/                    # Feature-based components
+│   ├── auth/                    # Auth-related components
+│
+├── lib/
+│   ├── redux/
+│   │   ├── features/
+│   │   │   ├── userSlice.ts    # Redux slice for user state
+│   │   ├── store.ts            # Redux store setup
+│   ├── requests.ts              # API request handlers
+│   ├── utils.ts                 # Utility functions
+│
+├── hooks/                       # Custom hooks
+│   ├── useAuth.ts                # Authentication hook
+│   ├── useTheme.ts               # Theme switcher hook
+│
+├── messages/                    # Language files
+│   ├── en.json
+│   ├── vi.json
+│
+├── providers/                   # React Providers
+│   ├── QueryProvider.tsx         # React Query provider
+│
+├── schemas/                     # Zod schema validation
+│   ├── auth.schema.ts            # Auth validation schema
+│
+├── public/                       # Static assets
+├── .gitignore
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── package-lock.json
+├── postcss.config.mjs
+├── README.md
+├── tsconfig.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌍 i18n (Internationalization)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses **next-intl** to support multiple languages. The translations are defined in the `messages/` directory as JSON files containing localized content.
 
-## Learn More
+### ✅ Installing `next-intl`
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+npm install next-intl
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 📌 Configuring Routing with `next-intl`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+In `app/routing.ts`, we configure supported `locales` and `pathnames` as follows:
 
-## Deploy on Vercel
+```ts
+import { createNavigation } from "next-intl/navigation";
+import { defineRouting } from "next-intl/routing";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+export const routing = defineRouting({
+  locales: ["en", "vi"],
+  defaultLocale: "vi",
+  localePrefix: {
+    mode: "always",
+    prefixes: {
+      en: "/en",
+      vi: "/vi",
+    },
+  },
+  pathnames: {
+    "/": "/",
+    "/home": {
+      en: "/home",
+      vi: "/trang-chu",
+    },
+  },
+});
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+export const { Link, redirect, usePathname, useRouter } =
+  createNavigation(routing);
+```
+
+### 📂 Managing Translation Files
+
+Create a `messages/` directory and add JSON files for each language:
+
+```json
+// messages/en.json
+{
+  "home.title": "Welcome to our website",
+  "home.description": "This is a modern Next.js boilerplate"
+}
+```
+
+```json
+// messages/vi.json
+{
+  "home.title": "Chào mừng bạn đến với trang web của chúng tôi",
+  "home.description": "Đây là một boilerplate Next.js hiện đại"
+}
+```
+
+### 🔧 Using i18n in Components
+
+Example usage in a Next.js component:
+
+```tsx
+import { useTranslations } from "next-intl";
+
+export default function HomePage() {
+  const t = useTranslations("home");
+  return (
+    <div>
+      <h1>{t("title")}</h1>
+      <p>{t("description")}</p>
+    </div>
+  );
+}
+```
+
+## 📦 Required Dependencies
+
+Before running the project, ensure you have installed the following dependencies:
+
+```sh
+npx shadcn@latest init
+npm install next-intl
+npm install zod
+npm install axios
+npm install @tanstack/react-query
+npm install sonner
+npm install react-hook-form
+npm install @reduxjs/toolkit
+npm install redux-persist @types/redux-persist
+```
+
+---
+
+## 🛠️ Installation
+
+### 1️⃣ Clone the repository
+
+```sh
+git clone https://github.com/phucdut/BASE-FE-NEXTJS.git
+cd BASE-FE-NEXTJS
+```
+
+### 2️⃣ Install dependencies
+
+```sh
+npm install  # or yarn install
+```
+
+### 3️⃣ Run the development server
+
+```sh
+npm run dev  # or yarn dev
+```
+
+---
+
+## 🚀 Tech Stack
+
+| Technology            | Description                    |
+| --------------------- | ------------------------------ |
+| **Next.js**           | React framework with SSR & SSG |
+| **TypeScript**        | Type-safe JavaScript           |
+| **Redux Toolkit**     | State management               |
+| **React Query**       | Fetching & caching data        |
+| **Zod**               | Schema validation              |
+| **TailwindCSS**       | Utility-first CSS framework    |
+| **ShadCN**            | Pre-built UI components        |
+| **Next-Intl**         | Internationalization           |
+| **Axios**             | HTTP requests                  |
+| **ESLint & Prettier** | Code linting & formatting      |
+
+---
+
+## 🔥 ESLint & Prettier Setup
+
+### Install dependencies
+
+```sh
+npm install --save-dev eslint eslint-config-next
+```
+
+### ESLint Config (`eslint.config.mjs`)
+
+```js
+import { FlatCompat } from "@eslint/eslintrc";
+import pluginJs from "@eslint/js";
+import eslintPluginImport from "eslint-plugin-import";
+import pluginReact from "eslint-plugin-react";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
+import tseslint from "typescript-eslint";
+
+const compat = new FlatCompat();
+
+export default [
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  {
+    settings: {
+      react: { version: "detect" },
+      "import/resolver": {
+        typescript: { alwaysTryTypes: true, project: "./tsconfig.json" },
+      },
+    },
+    plugins: {
+      import: eslintPluginImport,
+      "simple-import-sort": simpleImportSort,
+    },
+    rules: {
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "simple-import-sort/imports": ["error"],
+    },
+  },
+];
+```
+
+### Run ESLint
+
+```sh
+npm run lint -- --fix
+```
+
+---
+
+## 🎯 Conclusion
+
+✅ **Fully structured Next.js boilerplate** with best practices.
+✅ **Supports TypeScript, Redux Toolkit, React Query, and Zod.**
+✅ **Pre-configured ESLint, Prettier, and Next-Intl.**
+✅ **Ready for production!** 🚀
+
+Enjoy coding! 🎉
