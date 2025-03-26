@@ -183,6 +183,7 @@ npm install sonner
 npm install react-hook-form
 npm install @reduxjs/toolkit
 npm install redux-persist @types/redux-persist
+npm install next-themes
 ```
 
 ---
@@ -278,6 +279,82 @@ export default [
 
 ```sh
 npm run lint -- --fix
+```
+
+---
+
+## 🌙 Dark Mode with ShadCN UI
+
+### Setup Dark Mode Provider
+
+1. Install next-themes:
+
+```sh
+npm install next-themes
+```
+
+2. Create a ThemeProvider in `providers/theme-provider.tsx`:
+
+```tsx
+"use client";
+
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { type ThemeProviderProps } from "next-themes/dist/types";
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+}
+```
+
+3. Add Provider to your layout:
+
+```tsx
+// app/[locale]/layout.tsx
+import { ThemeProvider } from "@/providers/theme-provider";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### Add Theme Toggle
+
+Create a theme toggle component:
+
+```tsx
+"use client";
+
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+
+export function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    >
+      <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+    </Button>
+  );
+}
 ```
 
 ---
