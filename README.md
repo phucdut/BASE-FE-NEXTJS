@@ -359,6 +359,23 @@ export function ThemeToggle() {
 
 ---
 
+## 🎨 ShadCN UI Design System
+
+### Figma Design System
+
+ShadCN UI provides a comprehensive Figma design system that you can use as a reference for your components. Access it here:
+
+[ShadCN UI Figma Design System](<https://www.figma.com/design/ZPQIyxeWQdMu2SVU9zQ94W/%40shadcn%2Fui---Design-System-(Community)?node-id=1-22&p=f&t=xfr1gYS3dYhXfiFq-0>)
+
+This design system includes:
+
+- Component variations and states
+- Color schemes and typography
+- Dark and light mode variants
+- Layout patterns and spacing guides
+
+---
+
 ## 🎯 Conclusion
 
 ✅ **Fully structured Next.js boilerplate** with best practices.
